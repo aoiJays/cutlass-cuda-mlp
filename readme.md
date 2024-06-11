@@ -1,7 +1,14 @@
 ## demo
 
-```cpp
+```bash
+cd build
+cmake ..
+make -j
+./app
+```
 
+```cpp
+// main.cu
 #include <iostream>
 #include <chrono>
 
@@ -53,11 +60,12 @@ int main() {
     };
 
 
+    
     const int data_size = 256 * 256 * 256;
     const int batch_size = 65536;
     const int inputDim = 2;
 
-  
+    // 初始化：模型参数（用python事先导出的
     MLP mask_net(batch_size, inputDim, "../model/mask_model_weight.data");
     
     mask_net.addPositionalEmbedding(10);
@@ -68,12 +76,16 @@ int main() {
     mask_net.addLinear(1);
     mask_net.addSigmoid();
 
+    // 模型预览
     mask_net.print();
 
     Matrix X(inputDim, batch_size);
 
     for (int dir=2;dir>=0;--dir) {
-        make_2d_pts(dir);
+        
+        make_2d_pts(dir); // 准备数据
+
+        // 嵌入数据 （每个batch_size轮流进入GPU） // noted: 似乎之后需要整个塞进去
         DataLoader dataLoader(inputDim, data_size, batch_size, pts);
 
         std::chrono::duration<double> sum(0);
@@ -82,12 +94,12 @@ int main() {
             dataLoader.load(&X); // load data
 
             auto start = std::chrono::high_resolution_clock::now();
-            Matrix * res = mask_net.forward(&X);
+            Matrix * res = mask_net.forward(&X); // 推理
             auto end = std::chrono::high_resolution_clock::now();
 
             auto duration = end - start;
             sum += duration;
-            // res->print();
+            // res->print(); // 输出矩阵不大的可以输出一下
         }
 
         std::cout << "mask总运行时间: " << sum.count() << " 秒" << std::endl; 

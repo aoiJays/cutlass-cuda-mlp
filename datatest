@@ -1,7 +1,0 @@
-PositionalEmbedding: Embedding LayerDim = 42
-Linear: LayerDim = 256
-ReLU: Activation - LayerDim = 256
-Linear: LayerDim = 256
-ReLU: Activation - LayerDim = 256
-Linear: LayerDim = 1
-Sigmoid: Activation - LayerDim = 1
