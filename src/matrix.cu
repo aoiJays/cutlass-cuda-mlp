@@ -116,6 +116,13 @@ void Matrix::matrixFunc(Matrix * C, Matrix * A, Activataion func, int M, int N) 
     cudaDeviceSynchronize();
 }
 
+void Matrix::matrixFunc_dot(Matrix * C, Matrix * A, Activataion func, int M, int N) {
+    dim3 blockSize(256);
+    dim3 gridSize((M * N + blockSize.x - 1) / blockSize.x);
+    cu_matrixFunc_dot<<<gridSize, blockSize>>>(C->gpu.get(), A->gpu.get(), func, M, N);
+    cudaDeviceSynchronize();
+}
+
 void Matrix::matrixPositionalEmbedding(Matrix* C, Matrix* A, int M, int N, int level) {
     dim3 blockSize(256);
     dim3 gridSize((M * N + blockSize.x - 1) / blockSize.x);

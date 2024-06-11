@@ -80,6 +80,8 @@ int MLP::getOutputDim() const {
 
 
 void MLP::print() const {
+
+    std::cout << "=========== Network ============" << std::endl;
     for (int i=0;i<mlp.size();++i) {
         std::cout << mlp_info[i] << ": ";
         if ( mlp_info[i] == "InputLayer" || mlp_info[i] == "Linear" ) 
@@ -88,6 +90,7 @@ void MLP::print() const {
             std::cout << "Embedding LayerDim = "<< mlp[i]->getLayerDim() << "\n";
         else std::cout << "Activation - LayerDim = "<< mlp[i]->getLayerDim() << "\n";
     }
+    std::cout << "===============================" << std::endl;
 }
 
 MLP::~MLP() {

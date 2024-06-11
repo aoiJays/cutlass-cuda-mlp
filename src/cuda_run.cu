@@ -14,6 +14,11 @@ __global__ void cu_matrixFunc(float * dst, float * src, Activataion func, int m,
     if (idx < m*n) dst[idx] = Func(src[idx], func);
 }
 
+__global__ void cu_matrixFunc_dot(float * dst, float * src, Activataion func, int m, int n) {
+    int idx = blockIdx.x * blockDim.x + threadIdx.x;
+    if (idx < m*n) dst[idx] = Func(src[idx], func) * src[idx];
+}
+
 __global__ void cu_matrixPositionalEmbedding(float* d_C, float* d_A, int M, int N, int level) {
     int idx = blockIdx.x * blockDim.x + threadIdx.x;
     if (idx < M * N) {

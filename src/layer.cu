@@ -52,7 +52,7 @@ void ReLU::forward(Matrix * input, int lastLayerDim, int batch_size) {
     Matrix::matrixFunc(output.get(), input, F_ReLU, LayerDim, batch_size);
 }
 void ReLU::backward(Matrix * input, int lastLayerDim, int batch_size) {
-    Matrix::matrixFunc(grad.get(), input, F_dReLU, lastLayerDim, batch_size);
+    Matrix::matrixFunc_dot(grad.get(), input, F_dReLU, lastLayerDim, batch_size);
 }
 
 
@@ -63,5 +63,5 @@ void Sigmoid::forward(Matrix * input, int lastLayerDim, int batch_size) {
 }
 
 void Sigmoid::backward(Matrix * input, int lastLayerDim, int batch_size) {
-    Matrix::matrixFunc(grad.get(), input, F_dSigmoid, lastLayerDim, batch_size);
+    Matrix::matrixFunc_dot(grad.get(), input, F_dSigmoid, lastLayerDim, batch_size);
 }

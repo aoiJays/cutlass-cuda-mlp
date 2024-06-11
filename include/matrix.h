@@ -34,5 +34,6 @@ class Matrix {
         static void matrixMul_trans(Matrix * A, Matrix * B, Matrix * C, int M, int N, int K);
         static void matrixAdd(Matrix * A, Matrix * b, int M, int N);
         static void matrixFunc(Matrix * C, Matrix * A, Activataion func, int M, int N);
+        static void matrixFunc_dot(Matrix * C, Matrix * A, Activataion func, int M, int N);
         static void matrixPositionalEmbedding(Matrix * C, Matrix * A, int M, int N, int level);
 };
