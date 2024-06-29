@@ -14,9 +14,26 @@ __global__ void cu_matrixFunc(float * dst, float * src, Activataion func, int m,
     if (idx < m*n) dst[idx] = Func(src[idx], func);
 }
 
-__global__ void cu_matrixFunc_dot(float * dst, float * src, Activataion func, int m, int n) {
+__global__ void cu_matrixTranspose(float *dst, float *src, int M, int N) {
+    __shared__ float tile[32][32 + 1];  // +1 for padding
+
+    int x = blockIdx.x * blockDim.x + threadIdx.x;
+    int y = blockIdx.y * blockDim.y + threadIdx.y;
+
+    if (x < N && y < M) {
+        tile[threadIdx.y][threadIdx.x] = src[y * N + x];
+    }
+    __syncthreads(); 
+    x = blockIdx.y * blockDim.y + threadIdx.x;
+    y = blockIdx.x * blockDim.x + threadIdx.y;
+    if (x < M && y < N) {
+        dst[y * M + x] = tile[threadIdx.x][threadIdx.y];
+    }
+}
+
+__global__ void cu_matrixFunc_dot(float * dst, float * src, float *x , Activataion func, int m, int n) {
     int idx = blockIdx.x * blockDim.x + threadIdx.x;
-    if (idx < m*n) dst[idx] = Func(src[idx], func) * src[idx];
+    if (idx < m*n) dst[idx] = Func(x[idx], func) * src[idx];
 }
 
 __global__ void cu_matrixPositionalEmbedding(float* d_C, float* d_A, int M, int N, int level) {

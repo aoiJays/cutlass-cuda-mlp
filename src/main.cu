@@ -47,7 +47,7 @@ int main() {
 
 
     const int data_size = 256 * 256 * 256;
-    const int batch_size = 65536;
+    const int batch_size = 8;
     const int inputDim = 2;
 
   
@@ -161,7 +161,7 @@ int main() {
             // pred->print();
 
             // something bad …… need more time
-            // Matrix * grad = net_with_grad.autograd();
+            Matrix * grad = net_with_grad.autograd();
             // grad->print();
             // break;            
         }

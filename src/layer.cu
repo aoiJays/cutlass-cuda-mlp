@@ -33,6 +33,11 @@ void PositionalEmbedding::backward(Matrix * input, int lastLayerDim, int batch_s
 Linear::Linear(int batch_size, int LayerDim, int lastLayerDim, float * _W, float * _b, bool requires_grad) : Layer(batch_size, LayerDim, lastLayerDim, requires_grad) {
     W = std::make_shared<Matrix>(LayerDim, lastLayerDim, _W);
     b = std::make_shared<Matrix>(LayerDim, 1, _b); 
+
+    if ( requires_grad ) {
+        WT = std::make_shared<Matrix>(lastLayerDim, LayerDim);
+        Matrix::matrixTranspose(W.get(), WT.get(), LayerDim, lastLayerDim);
+    }
 }
 
 void Linear::forward(Matrix * input, int lastLayerDim, int batch_size) {
@@ -41,7 +46,7 @@ void Linear::forward(Matrix * input, int lastLayerDim, int batch_size) {
 }
 
 void Linear::backward(Matrix * input, int lastLayerDim, int batch_size) {
-    Matrix::matrixMul_trans(W.get(), input, grad.get(), lastLayerDim, batch_size, LayerDim);
+    Matrix::matrixMul(WT.get(), input, grad.get(), lastLayerDim, batch_size, LayerDim);
 }
 
 
@@ -52,7 +57,7 @@ void ReLU::forward(Matrix * input, int lastLayerDim, int batch_size) {
     Matrix::matrixFunc(output.get(), input, F_ReLU, LayerDim, batch_size);
 }
 void ReLU::backward(Matrix * input, int lastLayerDim, int batch_size) {
-    Matrix::matrixFunc_dot(grad.get(), input, F_dReLU, lastLayerDim, batch_size);
+    Matrix::matrixFunc_dot(grad.get(), input, output.get(), F_dReLU, lastLayerDim, batch_size);
 }
 
 
@@ -63,5 +68,5 @@ void Sigmoid::forward(Matrix * input, int lastLayerDim, int batch_size) {
 }
 
 void Sigmoid::backward(Matrix * input, int lastLayerDim, int batch_size) {
-    Matrix::matrixFunc_dot(grad.get(), input, F_dSigmoid, lastLayerDim, batch_size);
+    Matrix::matrixFunc_dot(grad.get(), input, output.get(), F_dSigmoid, lastLayerDim, batch_size);
 }

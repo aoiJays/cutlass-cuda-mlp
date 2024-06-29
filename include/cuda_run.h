@@ -18,5 +18,6 @@ do { \
 
 __global__ void cu_matrixAdd(float * dst, float * src, int m, int n);
 __global__ void cu_matrixFunc(float * dst, float * src, Activataion func, int m, int n);
-__global__ void cu_matrixFunc_dot(float * dst, float * src, Activataion func, int m, int n);
+__global__ void cu_matrixTranspose(float *dst, float *src, int M, int N);
+__global__ void cu_matrixFunc_dot(float * dst, float * src, float *x , Activataion func, int m, int n);
 __global__ void cu_matrixPositionalEmbedding(float* d_C, float* d_A, int M, int N, int level);

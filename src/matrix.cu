@@ -95,10 +95,6 @@ void Matrix::matrixMul(Matrix * A, Matrix * B, Matrix * C, int M, int N, int K) 
     cudaDeviceSynchronize();
 } 
 
-void Matrix::matrixMul_trans(Matrix * A, Matrix * B, Matrix * C, int M, int N, int K) {
-    cutlassMatrixMul_trans(A->gpu.get(), B->gpu.get(), C->gpu.get(), M, N, K);
-    cudaDeviceSynchronize();
-} 
 
 
 void Matrix::matrixAdd(Matrix * A, Matrix * b, int M, int N) {
@@ -109,6 +105,12 @@ void Matrix::matrixAdd(Matrix * A, Matrix * b, int M, int N) {
     cudaDeviceSynchronize();
 } 
 
+void  Matrix::matrixTranspose(Matrix * A, Matrix * B, int M, int N) {
+    dim3 blockSize(32, 32); // Thread block dimensions
+    dim3 gridSize((max(N,M) + blockSize.x - 1) / blockSize.x, (max(N,M) + blockSize.y - 1) / blockSize.y);
+    cu_matrixTranspose<<<gridSize, blockSize>>>(B->gpu.get(), A->gpu.get(), M, N);
+}
+
 void Matrix::matrixFunc(Matrix * C, Matrix * A, Activataion func, int M, int N) {
     dim3 blockSize(256);
     dim3 gridSize((M * N + blockSize.x - 1) / blockSize.x);
@@ -116,10 +118,10 @@ void Matrix::matrixFunc(Matrix * C, Matrix * A, Activataion func, int M, int N) 
     cudaDeviceSynchronize();
 }
 
-void Matrix::matrixFunc_dot(Matrix * C, Matrix * A, Activataion func, int M, int N) {
+void Matrix::matrixFunc_dot(Matrix * C, Matrix * A, Matrix * x, Activataion func, int M, int N) {
     dim3 blockSize(256);
     dim3 gridSize((M * N + blockSize.x - 1) / blockSize.x);
-    cu_matrixFunc_dot<<<gridSize, blockSize>>>(C->gpu.get(), A->gpu.get(), func, M, N);
+    cu_matrixFunc_dot<<<gridSize, blockSize>>>(C->gpu.get(), A->gpu.get(), x->gpu.get(),func, M, N);
     cudaDeviceSynchronize();
 }
 

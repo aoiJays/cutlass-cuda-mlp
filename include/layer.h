@@ -37,7 +37,7 @@ class PositionalEmbedding : public Layer {
 class Linear : public Layer {
 
     private:
-        std::shared_ptr<Matrix> W, b;
+        std::shared_ptr<Matrix> W, b, WT;
 
     public:
         Linear(int batch_size, int LayerDim, int lastLayerDim, float * _W, float * _b, bool requires_grad);

@@ -62,10 +62,11 @@ Matrix * MLP::autograd() {
         exit(-1);
     }
 
-    Matrix X(outputDim, batch_size, 1);
+    static Matrix X(outputDim, batch_size, 1);
     Matrix * input = &X;
 
     for (int i=(int)mlp.size() - 1;i>0;--i) {
+
         mlp[i]->backward(input, mlp[i-1]->getLayerDim(), batch_size);
         input = mlp[i]->getGrad();
     }

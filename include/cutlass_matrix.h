@@ -9,4 +9,3 @@
 */
 
 void cutlassMatrixMul(float * d_A, float * d_B, float * d_C, int M, int N, int K);
-void cutlassMatrixMul_trans(float * d_A, float * d_B, float * d_C, int M, int N, int K);
